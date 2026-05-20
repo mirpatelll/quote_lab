@@ -43,10 +43,26 @@ class QuoteList extends StatefulWidget {
 
 class _QuoteListState extends State<QuoteList> {
   List<Quote> quotes = [
-    Quote(text: 'Be yourself; everyone else is already taken.', author: 'Oscar Wilde', category: 'Inspiration'),
-    Quote(text: 'Two things are infinite: the universe and human stupidity.', author: 'Albert Einstein', category: 'Humor'),
-    Quote(text: 'Be the change you wish to see in the world.', author: 'Mahatma Gandhi', category: 'Inspiration'),
-    Quote(text: 'In the middle of every difficulty lies opportunity.', author: 'Albert Einstein', category: 'Motivation'),
+    Quote(
+      text: 'Be yourself; everyone else is already taken.',
+      author: 'Oscar Wilde',
+      category: 'Inspiration',
+    ),
+    Quote(
+      text: 'Two things are infinite: the universe and human stupidity.',
+      author: 'Albert Einstein',
+      category: 'Humor',
+    ),
+    Quote(
+      text: 'Be the change you wish to see in the world.',
+      author: 'Mahatma Gandhi',
+      category: 'Inspiration',
+    ),
+    Quote(
+      text: 'In the middle of every difficulty lies opportunity.',
+      author: 'Albert Einstein',
+      category: 'Motivation',
+    ),
   ];
 
   Color cardColor(String c) => switch (c.toLowerCase()) {
@@ -83,7 +99,10 @@ class _QuoteListState extends State<QuoteList> {
                 children: [
                   Text(quote.text, style: const TextStyle(fontSize: 18)),
                   const SizedBox(height: 6),
-                  Text('- ${quote.author}', style: TextStyle(color: Colors.grey[700])),
+                  Text(
+                    '- ${quote.author}',
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
                   const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
