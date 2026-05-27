@@ -1,30 +1,25 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:quote_app/main.dart';
+import 'package:quote_lab/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('Quote defaults to 0 likes', () {
+    final q = Quote(text: 'Test', author: 'Author');
+    expect(q.likes, 0);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('Quote defaults to General category', () {
+    final q = Quote(text: 'Test', author: 'Author');
+    expect(q.category, 'General');
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('Quote createdAt defaults to today', () {
+    final before = DateTime.now();
+    final q = Quote(text: 'Test', author: 'Author');
+    expect(q.createdAt.isAfter(before) || q.createdAt.isAtSameMomentAs(before), true);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('Quote accepts custom category', () {
+    final q = Quote(text: 'Test', author: 'Author', category: 'Humor');
+    expect(q.category, 'Humor');
   });
 }

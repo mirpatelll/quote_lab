@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,13 +26,15 @@ class Quote {
   final String author;
   String category;
   int likes;
+  final DateTime createdAt;
 
   Quote({
     required this.text,
     required this.author,
     this.category = 'General',
     this.likes = 0,
-  });
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 }
 
 class QuoteList extends StatefulWidget {
@@ -47,21 +50,25 @@ class _QuoteListState extends State<QuoteList> {
       text: 'Be yourself; everyone else is already taken.',
       author: 'Oscar Wilde',
       category: 'Inspiration',
+      createdAt: DateTime(2024, 1, 15),
     ),
     Quote(
       text: 'Two things are infinite: the universe and human stupidity.',
       author: 'Albert Einstein',
       category: 'Humor',
+      createdAt: DateTime(2024, 3, 22),
     ),
     Quote(
       text: 'Be the change you wish to see in the world.',
       author: 'Mahatma Gandhi',
       category: 'Inspiration',
+      createdAt: DateTime(2024, 6, 10),
     ),
     Quote(
       text: 'In the middle of every difficulty lies opportunity.',
       author: 'Albert Einstein',
       category: 'Motivation',
+      createdAt: DateTime(2025, 1, 5),
     ),
   ];
 
@@ -72,10 +79,26 @@ class _QuoteListState extends State<QuoteList> {
     _ => Colors.grey.shade100,
   };
 
-  void _deleteQuote(Quote quote) {
-    setState(() {
-      quotes.remove(quote);
-    });
+  Future<void> _deleteQuote(Quote quote) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete quote?'),
+        content: const Text('This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    ) ?? false;
+
+    if (ok) setState(() => quotes.remove(quote));
   }
 
   @override
@@ -89,6 +112,7 @@ class _QuoteListState extends State<QuoteList> {
         itemCount: quotes.length,
         itemBuilder: (context, index) {
           final quote = quotes[index];
+          final dateStr = DateFormat('MMM d, yyyy').format(quote.createdAt);
           return Card(
             color: cardColor(quote.category),
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -104,22 +128,28 @@ class _QuoteListState extends State<QuoteList> {
                     style: TextStyle(color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    spacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Chip(label: Text(quote.category)),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.thumb_up),
-                            onPressed: () => setState(() => quote.likes++),
-                          ),
-                          Text('${quote.likes}'),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _deleteQuote(quote),
-                          ),
-                        ],
+                      Text(
+                        dateStr,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.thumb_up),
+                        onPressed: () => setState(() => quote.likes++),
+                      ),
+                      Text('${quote.likes}'),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => _deleteQuote(quote),
                       ),
                     ],
                   ),
